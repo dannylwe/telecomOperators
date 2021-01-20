@@ -13,27 +13,24 @@ import (
 func main() {
 	// providers := getProviders()
 
-	m := getLine("0772504991")
-	fmt.Println(m)
+	// m := getLine("0772504991")
+	// fmt.Println(m)
 
-	const PORT string = "8090"
+	const PORT string = ":9000"
+	log.Println("starting application on " + PORT)
 	router := mux.NewRouter()
 	router.HandleFunc("/health", healthCheck).Methods("GET")
 	router.HandleFunc("/prefix", listPrefixes).Methods("GET")
+	router.HandleFunc("/providers", listProviders).Methods("GET")
 	log.Fatal(http.ListenAndServe(PORT, router))
 }
 
-func getProviders() []string {
-	providers := []string{
-		"MTN Uganda",
-		"Airtel Uganda",
-		"Uganda Telecom",
-		"Africell Uganda",
-		"Smile Telecom",
-		"K2 Telecom",
-		"Vodafone Uganda",
-		"Lycamobile Uganda",
-	}
+func getProviders() map[string][]string {
+	providers := make(map[string][]string)
+	providers["uganda"] = 	[]string {
+	"MTN Uganda", "Airtel Uganda","Uganda Telecom",
+	"Africell Uganda","Smile Telecom","Vodafone Uganda",
+	"Lycamobile Uganda"}
 	return providers
 }
 
@@ -97,5 +94,15 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 func listPrefixes(w http.ResponseWriter, r *http.Request) {
 	prefixes := getPrefixes()
 	payload, _ := json.Marshal(prefixes)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(payload))
+}
+
+func listProviders(w http.ResponseWriter, r *http.Request) {
+	providers := getProviders()
+	payload, _ := json.Marshal(providers)
+
+	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(payload))
 }
