@@ -57,6 +57,18 @@ func getLine(number string) string {
 	AFRICEL := "africell"
 	providerUnknown := "Unknown provider"
 	notSupported := "Number not supported"
+	insufficient := "Insufficient digits"
+	Unknown := "Unknown format"
+
+	if len(number) < 10 {
+		log.Println("Insufficient digits " + number)
+		return insufficient
+	}
+
+	if len(number) > 13 {
+		log.Println("Unknown format " + number)
+		return Unknown
+	}
 
 	if len(number) == 10 {
 		num := number[0:3]
