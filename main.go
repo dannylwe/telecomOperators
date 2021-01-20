@@ -22,7 +22,8 @@ func main() {
 }
 
 type phoneNumber struct {
-	Phone string `json:"phone"`
+	Phone   string `json:"phone"`
+	Country string `json:"country"`
 }
 
 func getProviders() map[string][]string {
@@ -36,22 +37,32 @@ func getProviders() map[string][]string {
 	return providers
 }
 
-func getPrefixes() map[string]string {
-	m := make(map[string]string)
-	m["mtn"] = "077, 078, 039"
-	m["airtel"] = "075, 070"
-	m["africell"] = "079"
-	m["utl"] = "071"
-	return m
+func getPrefixes(country string) map[string]string {
+	operator := make(map[string]string)
+	if country == "" || strings.ToLower(country) == "uganda" {
+		operator["mtn"] = "077, 078, 039"
+		operator["airtel"] = "075, 070"
+		operator["africell"] = "079"
+		operator["utl"] = "071"
+	}
+
+	if strings.ToLower(country) == "kenya" {
+		operator["safaricom"] = "701, 702, 703, 704, 705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 724, 725"
+		operator["airtel"] = "730, 731, 732, 733, 734, 735, 736, 737, 738, 739"
+		operator["Telkom Kenya"] = "770, 771, 772, 773, 774, 775, 776, 777, 778, 779"
+	}
+	return operator
 }
 
-func getLine(number string) string {
-	prefix := getPrefixes()
+func getLine(number, country string) string {
+	prefix := getPrefixes(country)
 
 	MTN := "mtn"
 	AIRTEL := "airtel"
 	UTL := "utl"
 	AFRICEL := "africell"
+	SAFARICOM := "safaricom"
+	TELKOM := "Telkom Kenya"
 	providerUnknown := "Unknown provider"
 	notSupported := "Number not supported"
 	insufficient := "Insufficient digits"
@@ -68,31 +79,57 @@ func getLine(number string) string {
 	}
 
 	if len(number) == 10 {
-		num := number[0:3]
-		mtnVal := prefix["mtn"]
-		airtelVal := prefix["airtel"]
-		africellVal := prefix["africell"]
-		utlVal := prefix["utl"]
+		if country == "" || strings.ToLower(country) == "uganda" {
 
-		mtn := strings.Contains(mtnVal, num)
-		airtel := strings.Contains(airtelVal, num)
-		africell := strings.Contains(africellVal, num)
-		utl := strings.Contains(utlVal, num)
+			num := number[0:3]
+			mtnVal := prefix["mtn"]
+			airtelVal := prefix["airtel"]
+			africellVal := prefix["africell"]
+			utlVal := prefix["utl"]
 
-		if mtn {
-			return MTN
+			mtn := strings.Contains(mtnVal, num)
+			airtel := strings.Contains(airtelVal, num)
+			africell := strings.Contains(africellVal, num)
+			utl := strings.Contains(utlVal, num)
+
+			if mtn {
+				return MTN
+			}
+
+			if airtel {
+				return AIRTEL
+			}
+
+			if africell {
+				return AFRICEL
+			}
+
+			if utl {
+				return UTL
+			}
 		}
 
-		if airtel {
-			return AIRTEL
-		}
+		if strings.ToLower(country) == "kenya" {
+			num := number[1:4]
+			safariVal := prefix["safaricom"]
+			airtelVal := prefix["airtel"]
+			telkomVal := prefix["Telkom Kenya"]
 
-		if africell {
-			return AFRICEL
-		}
+			safaricom := strings.Contains(safariVal, num)
+			airtel := strings.Contains(airtelVal, num)
+			telekom := strings.Contains(telkomVal, num)
 
-		if utl {
-			return UTL
+			if safaricom {
+				return SAFARICOM
+			}
+
+			if airtel {
+				return AIRTEL
+			}
+
+			if telekom {
+				return TELKOM
+			}
 		}
 		log.Println("unknown provider for: " + number)
 		return providerUnknown
@@ -106,7 +143,7 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func listPrefixes(w http.ResponseWriter, r *http.Request) {
-	prefixes := getPrefixes()
+	prefixes := getPrefixes("")
 	payload, _ := json.Marshal(prefixes)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -124,8 +161,8 @@ func listProviders(w http.ResponseWriter, r *http.Request) {
 func getCarrier(w http.ResponseWriter, r *http.Request) {
 	var PhoneNumber phoneNumber
 	_ = json.NewDecoder(r.Body).Decode(&PhoneNumber)
-	result := getLine(PhoneNumber.Phone)
-	log.Println("\nphone number: " + PhoneNumber.Phone + "\nCarrier: " + result)
+	result := getLine(PhoneNumber.Phone, PhoneNumber.Country)
+	log.Println("\nphone number: " + PhoneNumber.Phone + "\nCarrier: " + result + "\nCountry: " + strings.ToLower(PhoneNumber.Country))
 	temp := make(map[string]string)
 	temp["carrier"] = result
 
