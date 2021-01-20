@@ -11,11 +11,6 @@ import (
 )
 
 func main() {
-	// providers := getProviders()
-
-	// m := getLine("0772504991")
-	// fmt.Println(m)
-
 	const PORT string = ":9000"
 	log.Println("starting application on " + PORT)
 	router := mux.NewRouter()
