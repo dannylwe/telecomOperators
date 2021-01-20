@@ -36,6 +36,8 @@ func getProviders() map[string][]string {
 		"MTN Uganda", "Airtel Uganda", "Uganda Telecom",
 		"Africell Uganda", "Smile Telecom", "Vodafone Uganda",
 		"Lycamobile Uganda"}
+	providers["kenya"] = []string{"Safaricom", "Airtel", "Telkom Kenya"}
+	providers["tanzania"] = []string{"Vodacom", "tiGo", "Airtel", "Viettel"}
 	return providers
 }
 
