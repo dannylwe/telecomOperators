@@ -22,15 +22,20 @@ func main() {
 	router.HandleFunc("/health", healthCheck).Methods("GET")
 	router.HandleFunc("/prefix", listPrefixes).Methods("GET")
 	router.HandleFunc("/providers", listProviders).Methods("GET")
+	router.HandleFunc("/carrier", getCarrier).Methods("POST")
 	log.Fatal(http.ListenAndServe(PORT, router))
+}
+
+type phoneNumber struct {
+	Phone string `json:"phone"`
 }
 
 func getProviders() map[string][]string {
 	providers := make(map[string][]string)
-	providers["uganda"] = 	[]string {
-	"MTN Uganda", "Airtel Uganda","Uganda Telecom",
-	"Africell Uganda","Smile Telecom","Vodafone Uganda",
-	"Lycamobile Uganda"}
+	providers["uganda"] = []string{
+		"MTN Uganda", "Airtel Uganda", "Uganda Telecom",
+		"Africell Uganda", "Smile Telecom", "Vodafone Uganda",
+		"Lycamobile Uganda"}
 	return providers
 }
 
@@ -105,4 +110,16 @@ func listProviders(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(payload))
+}
+
+func getCarrier(w http.ResponseWriter, r *http.Request) {
+	var PhoneNumber phoneNumber
+	_ = json.NewDecoder(r.Body).Decode(&PhoneNumber)
+	result := getLine(PhoneNumber.Phone)
+	log.Println("\nphone number: " + PhoneNumber.Phone + "\nCarrier: " + result)
+	temp := make(map[string]string)
+	temp["carrier"] = result
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(temp)
 }
