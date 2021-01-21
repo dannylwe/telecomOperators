@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+
 	// "regexp"
 	"strings"
 
@@ -19,12 +21,20 @@ func main() {
 	router.HandleFunc("/prefix", listPrefixes).Methods("GET")
 	router.HandleFunc("/providers", listProviders).Methods("GET")
 	router.HandleFunc("/carrier", getCarrier).Methods("POST")
+	router.HandleFunc("/charge", getMobileMoneyCharges).Methods("POST")
 	log.Fatal(http.ListenAndServe(PORT, router))
 }
 
 type phoneNumber struct {
 	Phone   string `json:"phone"`
 	Country string `json:"country"`
+}
+
+type mobileMoney struct {
+	Amount      int    `json:"amount"`
+	Country     string `json:"country"`
+	Network     string `json:"network"`
+	Destination string `json:"destination"`
 }
 
 func getProviders() map[string][]string {
@@ -142,6 +152,57 @@ func getLine(number, country string) string {
 	return notSupported
 }
 
+func mobileMoneyCharges(amount int, country, network, destination string) (int, error) {
+	if country == "" {
+		return 0, errors.New("Invalid country")
+	}
+	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
+		if amount < 500 {
+			return 0, errors.New("not supported")
+		}
+		if amount < 2501 {
+			return 30, nil
+		}
+		if amount < 5001 {
+			return 100, nil
+		}
+		if amount < 15001 {
+			return 350, nil
+		}
+		if amount < 30001 {
+			return 500, nil
+		}
+		if amount < 45001 {
+			return 600, nil
+		}
+		if amount < 60001 {
+			return 750, nil
+		}
+		if amount < 125001 {
+			return 1000, nil
+		}
+		if amount < 250001 {
+			return 1100, nil
+		}
+		if amount < 500001 {
+			return 1250, nil
+		}
+		if amount < 1000001 {
+			return 1250, nil
+		}
+		if amount < 2000001 {
+			return 1250, nil
+		}
+		if amount < 4000001 {
+			return 1250, nil
+		}
+		if amount < 7000001 {
+			return 1250, nil
+		}
+	}
+	return 0, errors.New("not supported")
+}
+
 func healthCheck(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Tel Provider is healthy")
 }
@@ -171,5 +232,23 @@ func getCarrier(w http.ResponseWriter, r *http.Request) {
 	temp["carrier"] = result
 
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(temp)
+}
+
+func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
+	var MobileMoney mobileMoney
+	_ = json.NewDecoder(r.Body).Decode(&MobileMoney)
+	amount, err := mobileMoneyCharges(MobileMoney.Amount, MobileMoney.Country, MobileMoney.Network, MobileMoney.Destination)
+	if err != nil {
+		log.Println(err)
+		fmt.Fprintf(w, "amount not supported")
+		return
+	}
+
+	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount))
+	w.Header().Set("Content-Type", "application/json")
+	temp := make(map[string]interface{})
+	temp["charge"] = amount
+	temp["amount"] = MobileMoney.Amount
 	json.NewEncoder(w).Encode(temp)
 }
