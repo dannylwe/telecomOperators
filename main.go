@@ -227,7 +227,7 @@ func getCarrier(w http.ResponseWriter, r *http.Request) {
 	var PhoneNumber phoneNumber
 	_ = json.NewDecoder(r.Body).Decode(&PhoneNumber)
 	result := getLine(PhoneNumber.Phone, PhoneNumber.Country)
-	log.Println("\nphone number: " + PhoneNumber.Phone + "\nCarrier: " + result + "\nCountry: " + strings.ToLower(PhoneNumber.Country))
+	log.Println("phone number: " + PhoneNumber.Phone + " Carrier: " + result + " Country: " + strings.ToLower(PhoneNumber.Country))
 	temp := make(map[string]string)
 	temp["carrier"] = result
 
@@ -241,7 +241,8 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 	amount, err := mobileMoneyCharges(MobileMoney.Amount, MobileMoney.Country, MobileMoney.Network, MobileMoney.Destination)
 	if err != nil {
 		log.Println(err)
-		fmt.Fprintf(w, "amount not supported")
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"statusError":"amount not supported"}`))
 		return
 	}
 
