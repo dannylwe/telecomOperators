@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	// "regexp"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -67,6 +68,9 @@ func getLine(number, country string) string {
 	notSupported := "Number not supported"
 	insufficient := "Insufficient digits"
 	Unknown := "Unknown format"
+
+	// m1 := regexp.MustCompile(`(\+\d{1-3})|(\d{1,4})`)
+	// log.Println(m1.ReplaceAllString(number, "0"))
 
 	if len(number) < 10 {
 		log.Println("Insufficient digits " + number)
