@@ -152,13 +152,38 @@ func getLine(number, country string) string {
 	return notSupported
 }
 
+func paymentCategory(destination, country, network string) (int, error) {
+	unknown := errors.New("unknown payment")
+	if country == "uganda" && network == "mtn"{
+		c1 := []string{"UMEME", "NWSC", "DStv", "StarTimes", "NSSF", "Multiplex"}
+		c2 := []string{"AzamTV", "ReadyPay", "SchoolFees", "SolarNow"}
+		
+		for _, val := range c1 {
+			if strings.ToLower(destination) == strings.ToLower(val) {
+				log.Println(val + " payment")
+				return 1, nil
+			}
+		}
+	
+		for _, val := range c2 {
+			if strings.ToLower(destination) == strings.ToLower(val) {
+				log.Println(val)
+				return 2, nil
+			}
+		}
+	}
+	log.Println(destination)
+	return 0, unknown
+
+}
+
 func mobileMoneyCharges(amount int, country, network, destination string) (int, error) {
 	if country == "" || network == "" || destination == "" {
 		return 0, errors.New("Invalid Data")
 	}
 	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
 		if amount < 500 {
-			return 0, errors.New("not supported")
+			return 0, errors.New("amount not supported")
 		}
 		if amount < 2501 {
 			return 30, nil
@@ -203,7 +228,7 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 
 	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "other" {
 		if amount < 500 {
-			return 0, errors.New("not supported")
+			return 0, errors.New("amount not supported")
 		}
 		if amount < 2501 {
 			return 830, nil
@@ -248,7 +273,7 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 
 	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "bank" {
 		if amount < 500 {
-			return 0, errors.New("not supported")
+			return 0, errors.New("amount not supported")
 		}
 		if amount < 2501 {
 			return 0, errors.New("N/A")
@@ -293,7 +318,7 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 
 	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "withdraw" {
 		if amount < 500 {
-			return 0, errors.New("not supported")
+			return 0, errors.New("amount not supported")
 		}
 		if amount < 2501 {
 			return 350, nil
@@ -335,7 +360,101 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 			return 22000, nil
 		}
 	}
-	return 0, errors.New("not supported")
+
+	payment, err := paymentCategory(destination, country, network)
+	if err != nil {
+		log.Println(err)
+	}
+	if payment == 2 {
+		if amount < 500 {
+			return 0, errors.New("amount not supported")
+		}
+		if amount < 2501 {
+			return 110, nil
+		}
+		if amount < 5001 {
+			return 150, nil
+		}
+		if amount < 15001 {
+			return 550, nil
+		}
+		if amount < 30001 {
+			return 650, nil
+		}
+		if amount < 45001 {
+			return 750, nil
+		}
+		if amount < 60001 {
+			return 850, nil
+		}
+		if amount < 125001 {
+			return 950, nil
+		}
+		if amount < 250001 {
+			return 1050, nil
+		}
+		if amount < 500001 {
+			return 1300, nil
+		}
+		if amount < 1000001 {
+			return 3350, nil
+		}
+		if amount < 2000001 {
+			return 5750, nil
+		}
+		if amount < 4000001 {
+			return 5750, nil
+		}
+		if amount < 7000001 {
+			return 5750, nil
+		}
+	}
+
+	if payment == 1 {
+		if amount < 500 {
+			return 0, errors.New("amount not supported")
+		}
+		if amount < 2501 {
+			return 190, nil
+		}
+		if amount < 5001 {
+			return 600, nil
+		}
+		if amount < 15001 {
+			return 1000, nil
+		}
+		if amount < 30001 {
+			return 1600, nil
+		}
+		if amount < 45001 {
+			return 2100, nil
+		}
+		if amount < 60001 {
+			return 2800, nil
+		}
+		if amount < 125001 {
+			return 3700, nil
+		}
+		if amount < 250001 {
+			return 4150, nil
+		}
+		if amount < 500001 {
+			return 5300, nil
+		}
+		if amount < 1000001 {
+			return 6300, nil
+		}
+		if amount < 2000001 {
+			return 6300, nil
+		}
+		if amount < 4000001 {
+			return 6300, nil
+		}
+		if amount < 7000001 {
+			return 6300, nil
+		}
+	}
+	return 0, errors.New("payment category not supported")
 }
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
