@@ -153,8 +153,8 @@ func getLine(number, country string) string {
 }
 
 func mobileMoneyCharges(amount int, country, network, destination string) (int, error) {
-	if country == "" {
-		return 0, errors.New("Invalid country")
+	if country == "" || network == "" || destination == "" {
+		return 0, errors.New("Invalid Data")
 	}
 	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
 		if amount < 500 {
@@ -242,7 +242,7 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"statusError":"amount not supported"}`))
+		w.Write([]byte(`{"statusError":"Invalid Data"}`))
 		return
 	}
 
