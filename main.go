@@ -245,6 +245,51 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 			return 55000, nil
 		}
 	}
+
+	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "bank" {
+		if amount < 500 {
+			return 0, errors.New("not supported")
+		}
+		if amount < 2501 {
+			return 0, errors.New("N/A")
+		}
+		if amount < 5001 {
+			return 1500, nil
+		}
+		if amount < 15001 {
+			return 1500, nil
+		}
+		if amount < 30001 {
+			return 1500, nil
+		}
+		if amount < 45001 {
+			return 1500, nil
+		}
+		if amount < 60001 {
+			return 1500, nil
+		}
+		if amount < 125001 {
+			return 1500, nil
+		}
+		if amount < 250001 {
+			return 2250, nil
+		}
+		if amount < 500001 {
+			return 4100, nil
+		}
+		if amount < 1000001 {
+			return 6150, nil
+		}
+		if amount < 2000001 {
+			return 9250, nil
+		}
+		if amount < 4000001 {
+			return 11300, nil
+		}
+		if amount < 7000001 {
+			return 11300, nil
+		}
+	}
 	return 0, errors.New("not supported")
 }
 
