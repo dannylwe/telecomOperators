@@ -500,7 +500,7 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount))
+	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: "+ fmt.Sprintf("%s", MobileMoney.Destination))
 	w.Header().Set("Content-Type", "application/json")
 	temp := make(map[string]interface{})
 	temp["charge"] = amount
