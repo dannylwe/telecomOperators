@@ -181,189 +181,188 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 	if country == "" || network == "" || destination == "" {
 		return 0, errors.New("Invalid Data")
 	}
-	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
-		if amount < 500 {
-			return 0, errors.New("amount not supported")
+	if strings.ToLower(country) == "uganda" {
+		if strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 30, nil
+			}
+			if amount < 5001 {
+				return 100, nil
+			}
+			if amount < 15001 {
+				return 350, nil
+			}
+			if amount < 30001 {
+				return 500, nil
+			}
+			if amount < 45001 {
+				return 600, nil
+			}
+			if amount < 60001 {
+				return 750, nil
+			}
+			if amount < 125001 {
+				return 1000, nil
+			}
+			if amount < 250001 {
+				return 1100, nil
+			}
+			if amount < 500001 {
+				return 1250, nil
+			}
+			if amount < 1000001 {
+				return 1250, nil
+			}
+			if amount < 2000001 {
+				return 1250, nil
+			}
+			if amount < 4000001 {
+				return 1250, nil
+			}
+			if amount < 7000001 {
+				return 1250, nil
+			}
 		}
-		if amount < 2501 {
-			return 30, nil
+		if strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "other" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 830, nil
+			}
+			if amount < 5001 {
+				return 940, nil
+			}
+			if amount < 15001 {
+				return 1880, nil
+			}
+			if amount < 30001 {
+				return 2310, nil
+			}
+			if amount < 45001 {
+				return 2310, nil
+			}
+			if amount < 60001 {
+				return 2500, nil
+			}
+			if amount < 125001 {
+				return 3325, nil
+			}
+			if amount < 250001 {
+				return 4975, nil
+			}
+			if amount < 500001 {
+				return 7175, nil
+			}
+			if amount < 1000001 {
+				return 12650, nil
+			}
+			if amount < 2000001 {
+				return 22000, nil
+			}
+			if amount < 4000001 {
+				return 37400, nil
+			}
+			if amount < 7000001 {
+				return 55000, nil
+			}
 		}
-		if amount < 5001 {
-			return 100, nil
+		if strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "bank" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 0, errors.New("N/A")
+			}
+			if amount < 5001 {
+				return 1500, nil
+			}
+			if amount < 15001 {
+				return 1500, nil
+			}
+			if amount < 30001 {
+				return 1500, nil
+			}
+			if amount < 45001 {
+				return 1500, nil
+			}
+			if amount < 60001 {
+				return 1500, nil
+			}
+			if amount < 125001 {
+				return 1500, nil
+			}
+			if amount < 250001 {
+				return 2250, nil
+			}
+			if amount < 500001 {
+				return 4100, nil
+			}
+			if amount < 1000001 {
+				return 6150, nil
+			}
+			if amount < 2000001 {
+				return 9250, nil
+			}
+			if amount < 4000001 {
+				return 11300, nil
+			}
+			if amount < 7000001 {
+				return 11300, nil
+			}
 		}
-		if amount < 15001 {
-			return 350, nil
+		if strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "withdraw" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 350, nil
+			}
+			if amount < 5001 {
+				return 450, nil
+			}
+			if amount < 15001 {
+				return 750, nil
+			}
+			if amount < 30001 {
+				return 950, nil
+			}
+			if amount < 45001 {
+				return 1300, nil
+			}
+			if amount < 60001 {
+				return 1600, nil
+			}
+			if amount < 125001 {
+				return 2050, nil
+			}
+			if amount < 250001 {
+				return 3750, nil
+			}
+			if amount < 500001 {
+				return 7350, nil
+			}
+			if amount < 1000001 {
+				return 13000, nil
+			}
+			if amount < 2000001 {
+				return 16000, nil
+			}
+			if amount < 4000001 {
+				return 19000, nil
+			}
+			if amount < 7000001 {
+				return 22000, nil
+			}
 		}
-		if amount < 30001 {
-			return 500, nil
-		}
-		if amount < 45001 {
-			return 600, nil
-		}
-		if amount < 60001 {
-			return 750, nil
-		}
-		if amount < 125001 {
-			return 1000, nil
-		}
-		if amount < 250001 {
-			return 1100, nil
-		}
-		if amount < 500001 {
-			return 1250, nil
-		}
-		if amount < 1000001 {
-			return 1250, nil
-		}
-		if amount < 2000001 {
-			return 1250, nil
-		}
-		if amount < 4000001 {
-			return 1250, nil
-		}
-		if amount < 7000001 {
-			return 1250, nil
-		}
-	}
-
-	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "other" {
-		if amount < 500 {
-			return 0, errors.New("amount not supported")
-		}
-		if amount < 2501 {
-			return 830, nil
-		}
-		if amount < 5001 {
-			return 940, nil
-		}
-		if amount < 15001 {
-			return 1880, nil
-		}
-		if amount < 30001 {
-			return 2310, nil
-		}
-		if amount < 45001 {
-			return 2310, nil
-		}
-		if amount < 60001 {
-			return 2500, nil
-		}
-		if amount < 125001 {
-			return 3325, nil
-		}
-		if amount < 250001 {
-			return 4975, nil
-		}
-		if amount < 500001 {
-			return 7175, nil
-		}
-		if amount < 1000001 {
-			return 12650, nil
-		}
-		if amount < 2000001 {
-			return 22000, nil
-		}
-		if amount < 4000001 {
-			return 37400, nil
-		}
-		if amount < 7000001 {
-			return 55000, nil
-		}
-	}
-
-	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "bank" {
-		if amount < 500 {
-			return 0, errors.New("amount not supported")
-		}
-		if amount < 2501 {
-			return 0, errors.New("N/A")
-		}
-		if amount < 5001 {
-			return 1500, nil
-		}
-		if amount < 15001 {
-			return 1500, nil
-		}
-		if amount < 30001 {
-			return 1500, nil
-		}
-		if amount < 45001 {
-			return 1500, nil
-		}
-		if amount < 60001 {
-			return 1500, nil
-		}
-		if amount < 125001 {
-			return 1500, nil
-		}
-		if amount < 250001 {
-			return 2250, nil
-		}
-		if amount < 500001 {
-			return 4100, nil
-		}
-		if amount < 1000001 {
-			return 6150, nil
-		}
-		if amount < 2000001 {
-			return 9250, nil
-		}
-		if amount < 4000001 {
-			return 11300, nil
-		}
-		if amount < 7000001 {
-			return 11300, nil
-		}
-	}
-
-	if strings.ToLower(country) == "uganda" && strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "withdraw" {
-		if amount < 500 {
-			return 0, errors.New("amount not supported")
-		}
-		if amount < 2501 {
-			return 350, nil
-		}
-		if amount < 5001 {
-			return 450, nil
-		}
-		if amount < 15001 {
-			return 750, nil
-		}
-		if amount < 30001 {
-			return 950, nil
-		}
-		if amount < 45001 {
-			return 1300, nil
-		}
-		if amount < 60001 {
-			return 1600, nil
-		}
-		if amount < 125001 {
-			return 2050, nil
-		}
-		if amount < 250001 {
-			return 3750, nil
-		}
-		if amount < 500001 {
-			return 7350, nil
-		}
-		if amount < 1000001 {
-			return 13000, nil
-		}
-		if amount < 2000001 {
-			return 16000, nil
-		}
-		if amount < 4000001 {
-			return 19000, nil
-		}
-		if amount < 7000001 {
-			return 22000, nil
-		}
-	}
+	} 
 
 	payment, err := paymentCategory(destination, country, network)
 	if err != nil {
-		log.Println(err)
+		log.Println("Error on: " + "Country: " + country + ", " + "Destination: "+ destination + ", "+ "Network: " + network + ", Error: " + fmt.Sprintf("%v", err))
 	}
 	if payment == 2 {
 		if amount < 500 {
