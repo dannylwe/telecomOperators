@@ -154,17 +154,17 @@ func getLine(number, country string) string {
 
 func paymentCategory(destination, country, network string) (int, error) {
 	unknown := errors.New("unknown payment")
-	if country == "uganda" && network == "mtn"{
+	if country == "uganda" && network == "mtn" {
 		c1 := []string{"UMEME", "NWSC", "DStv", "StarTimes", "NSSF", "Multiplex"}
 		c2 := []string{"AzamTV", "ReadyPay", "SchoolFees", "SolarNow"}
-		
+
 		for _, val := range c1 {
 			if strings.ToLower(destination) == strings.ToLower(val) {
 				log.Println(val + " payment")
 				return 1, nil
 			}
 		}
-	
+
 		for _, val := range c2 {
 			if strings.ToLower(destination) == strings.ToLower(val) {
 				log.Println(val)
@@ -180,6 +180,103 @@ func paymentCategory(destination, country, network string) (int, error) {
 func mobileMoneyCharges(amount int, country, network, destination string) (int, error) {
 	if country == "" || network == "" || destination == "" {
 		return 0, errors.New("Invalid Data")
+	}
+	if strings.ToLower(country) == "kenya" {
+		if strings.ToLower(network) == "mpesa" && strings.ToLower(destination) == "withdraw" {
+			if amount < 50 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 100 {
+				return 10, nil
+			}
+			if amount < 501 {
+				return 27, nil
+			}
+			if amount < 1001 {
+				return 28, nil
+			}
+			if amount < 1501 {
+				return 28, nil
+			}
+			if amount < 2501 {
+				return 28, nil
+			}
+			if amount < 3501 {
+				return 50, nil
+			}
+			if amount < 5001 {
+				return 67, nil
+			}
+			if amount < 7501 {
+				return 30, nil
+			}
+			if amount < 10001 {
+				return 112, nil
+			}
+			if amount < 15001 {
+				return 162, nil
+			}
+			if amount < 20001 {
+				return 180, nil
+			}
+			if amount < 35001 {
+				return 191, nil
+			}
+			if amount < 50001 {
+				return 270, nil
+			}
+			if amount < 150001 {
+				return 300, nil
+			}
+		}
+
+		if strings.ToLower(network) == "mpesa" && strings.ToLower(destination) == "mpsesa" || strings.ToLower(destination) == "other" {
+			if amount < 50 {
+				return 0, nil
+			}
+			if amount < 100 {
+				return 0, nil
+			}
+			if amount < 501 {
+				return 6, nil
+			}
+			if amount < 1001 {
+				return 12, nil
+			}
+			if amount < 1501 {
+				return 22, nil
+			}
+			if amount < 2501 {
+				return 32, nil
+			}
+			if amount < 3501 {
+				return 51, nil
+			}
+			if amount < 5001 {
+				return 55, nil
+			}
+			if amount < 7501 {
+				return 75, nil
+			}
+			if amount < 10001 {
+				return 87, nil
+			}
+			if amount < 15001 {
+				return 97, nil
+			}
+			if amount < 20001 {
+				return 102, nil
+			}
+			if amount < 35001 {
+				return 105, nil
+			}
+			if amount < 50001 {
+				return 105, nil
+			}
+			if amount < 150001 {
+				return 105, nil
+			}
+		}
 	}
 	if strings.ToLower(country) == "uganda" {
 		if strings.ToLower(network) == "mtn" && strings.ToLower(destination) == "mtn" {
@@ -358,11 +455,11 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 				return 22000, nil
 			}
 		}
-	} 
+	}
 
 	payment, err := paymentCategory(destination, country, network)
 	if err != nil {
-		log.Println("Error on: " + "Country: " + country + ", " + "Destination: "+ destination + ", "+ "Network: " + network + ", Error: " + fmt.Sprintf("%v", err))
+		log.Println("Error on: " + "Country: " + country + ", " + "Destination: " + destination + ", " + "Network: " + network + ", Error: " + fmt.Sprintf("%v", err))
 	}
 	if payment == 2 {
 		if amount < 500 {
@@ -499,7 +596,7 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: "+ fmt.Sprintf("%s", MobileMoney.Destination))
+	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: " + fmt.Sprintf("%s", MobileMoney.Destination))
 	w.Header().Set("Content-Type", "application/json")
 	temp := make(map[string]interface{})
 	temp["charge"] = amount
