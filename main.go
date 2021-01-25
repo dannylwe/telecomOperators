@@ -172,7 +172,20 @@ func paymentCategory(destination, country, network string) (int, error) {
 			}
 		}
 	}
-	log.Println(destination)
+
+	if country == "uganda" && network == "airtel" {
+		aitel1 := []string{"UMEME", "NWSC", "PayTv", "UEDCL", "KCCA", "URA"}
+		for _, val := range aitel1 {
+			if strings.ToLower(destination) == strings.ToLower(val) {
+				log.Println(val + " payment")
+				return 3, nil
+			}
+		}
+		if strings.ToLower(destination) == strings.ToLower("otherPayment") {
+			return 4, nil
+		}
+	}
+	log.Println(destination + " error")
 	return 0, unknown
 
 }
@@ -455,12 +468,149 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 				return 22000, nil
 			}
 		}
+		if strings.ToLower(network) == "airtel" && strings.ToLower(destination) == "withdraw" {
+			if amount < 1 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 330, nil
+			}
+			if amount < 5001 {
+				return 440, nil
+			}
+			if amount < 15001 {
+				return 700, nil
+			}
+			if amount < 30001 {
+				return 880, nil
+			}
+			if amount < 45001 {
+				return 1210, nil
+			}
+			if amount < 60001 {
+				return 1500, nil
+			}
+			if amount < 125001 {
+				return 1925, nil
+			}
+			if amount < 250001 {
+				return 3575, nil
+			}
+			if amount < 500001 {
+				return 7000, nil
+			}
+			if amount < 1000001 {
+				return 12500, nil
+			}
+			if amount < 2000001 {
+				return 12500, nil
+			}
+			if amount < 4000001 {
+				return 12500, nil
+			}
+			if amount < 7000001 {
+				return 12500, nil
+			}
+		}
+
+		if strings.ToLower(network) == "airtel" && strings.ToLower(destination) == "airtel" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 100, nil
+			}
+			if amount < 5001 {
+				return 100, nil
+			}
+			if amount < 15001 {
+				return 500, nil
+			}
+			if amount < 30001 {
+				return 500, nil
+			}
+			if amount < 45001 {
+				return 500, nil
+			}
+			if amount < 60001 {
+				return 500, nil
+			}
+			if amount < 125001 {
+				return 1000, nil
+			}
+			if amount < 250001 {
+				return 1000, nil
+			}
+			if amount < 500001 {
+				return 1000, nil
+			}
+			if amount < 1000001 {
+				return 1000, nil
+			}
+			if amount < 2000001 {
+				return 1000, nil
+			}
+			if amount < 4000001 {
+				return 1000, nil
+			}
+			if amount < 7000001 {
+				return 1000, nil
+			}
+		}
+
+		if strings.ToLower(network) == "airtel" && strings.ToLower(destination) == "other" {
+			if amount < 500 {
+				return 0, errors.New("amount not supported")
+			}
+			if amount < 2501 {
+				return 980, nil
+			}
+			if amount < 5001 {
+				return 980, nil
+			}
+			if amount < 15001 {
+				return 1975, nil
+			}
+			if amount < 30001 {
+				return 2165, nil
+			}
+			if amount < 45001 {
+				return 2595, nil
+			}
+			if amount < 60001 {
+				return 2595, nil
+			}
+			if amount < 125001 {
+				return 3765, nil
+			}
+			if amount < 250001 {
+				return 5495, nil
+			}
+			if amount < 500001 {
+				return 8025, nil
+			}
+			if amount < 1000001 {
+				return 15150, nil
+			}
+			if amount < 2000001 {
+				return 26500, nil
+			}
+			if amount < 4000001 {
+				return 45400, nil
+			}
+			if amount < 7000001 {
+				return 60700, nil
+			}
+		}
 	}
 
 	payment, err := paymentCategory(destination, country, network)
 	if err != nil {
 		log.Println("Error on: " + "Country: " + country + ", " + "Destination: " + destination + ", " + "Network: " + network + ", Error: " + fmt.Sprintf("%v", err))
+		return 0, err
 	}
+	log.Println("payment: " + fmt.Sprintf("%d", payment))
+
 	if payment == 2 {
 		if amount < 500 {
 			return 0, errors.New("amount not supported")
@@ -550,6 +700,96 @@ func mobileMoneyCharges(amount int, country, network, destination string) (int, 
 			return 6300, nil
 		}
 	}
+
+	if payment == 3 {
+		if amount < 500 {
+			return 0, errors.New("amount not supported")
+		}
+		if amount < 2501 {
+			return 190, nil
+		}
+		if amount < 5001 {
+			return 330, nil
+		}
+		if amount < 15001 {
+			return 1000, nil
+		}
+		if amount < 30001 {
+			return 1600, nil
+		}
+		if amount < 45001 {
+			return 2000, nil
+		}
+		if amount < 60001 {
+			return 2650, nil
+		}
+		if amount < 125001 {
+			return 3500, nil
+		}
+		if amount < 250001 {
+			return 3950, nil
+		}
+		if amount < 500001 {
+			return 5050, nil
+		}
+		if amount < 1000001 {
+			return 6300, nil
+		}
+		if amount < 2000001 {
+			return 6300, nil
+		}
+		if amount < 4000001 {
+			return 6300, nil
+		}
+		if amount < 7000001 {
+			return 6300, nil
+		}
+	}
+
+	if payment == 4 {
+		if amount < 500 {
+			return 0, errors.New("amount not supported")
+		}
+		if amount < 2501 {
+			return 120, nil
+		}
+		if amount < 5001 {
+			return 140, nil
+		}
+		if amount < 15001 {
+			return 500, nil
+		}
+		if amount < 30001 {
+			return 500, nil
+		}
+		if amount < 45001 {
+			return 500, nil
+		}
+		if amount < 60001 {
+			return 550, nil
+		}
+		if amount < 125001 {
+			return 660, nil
+		}
+		if amount < 250001 {
+			return 950, nil
+		}
+		if amount < 500001 {
+			return 1300, nil
+		}
+		if amount < 1000001 {
+			return 3350, nil
+		}
+		if amount < 2000001 {
+			return 5750, nil
+		}
+		if amount < 4000001 {
+			return 5750, nil
+		}
+		if amount < 7000001 {
+			return 5750, nil
+		}
+	}
 	return 0, errors.New("payment category not supported")
 }
 
@@ -596,10 +836,12 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: " + fmt.Sprintf("%s", MobileMoney.Destination))
+	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: " + strings.ToLower(fmt.Sprintf("%s", MobileMoney.Destination)) + " Network: " +fmt.Sprintf("%s", MobileMoney.Network))
 	w.Header().Set("Content-Type", "application/json")
 	temp := make(map[string]interface{})
 	temp["charge"] = amount
 	temp["amount"] = MobileMoney.Amount
+	temp["network"] = MobileMoney.Network
+	temp["destination"] = strings.ToLower(MobileMoney.Destination)
 	json.NewEncoder(w).Encode(temp)
 }
