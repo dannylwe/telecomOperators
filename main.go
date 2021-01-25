@@ -22,6 +22,7 @@ func main() {
 	router.HandleFunc("/providers", listProviders).Methods("GET")
 	router.HandleFunc("/carrier", getCarrier).Methods("POST")
 	router.HandleFunc("/charge", getMobileMoneyCharges).Methods("POST")
+	router.HandleFunc("/wrtomtn", receiveWorldRemit).Methods("GET")
 	log.Fatal(http.ListenAndServe(PORT, router))
 }
 
@@ -63,6 +64,10 @@ func getPrefixes(country string) map[string]string {
 		operator["Telkom Kenya"] = "770, 771, 772, 773, 774, 775, 776, 777, 778, 779"
 	}
 	return operator
+}
+
+func worldRemitToMTN() []string {
+	return []string{"Benin", "Ghana", "Ivory Coast", "Liberia", "Rwanda", "Republic of Guinea", "Uganda", "Zambia"}
 }
 
 func getLine(number, country string) string {
@@ -832,16 +837,24 @@ func getMobileMoneyCharges(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(`{"statusError":"Invalid Data"}`))
 		return
 	}
 
-	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: " + strings.ToLower(fmt.Sprintf("%s", MobileMoney.Destination)) + " Network: " +fmt.Sprintf("%s", MobileMoney.Network))
+	log.Println("Amount: " + fmt.Sprintf("%d", MobileMoney.Amount) + " Charge: " + fmt.Sprintf("%d", amount) + " Destination: " + strings.ToLower(fmt.Sprintf("%s", MobileMoney.Destination)) + " Network: " + fmt.Sprintf("%s", MobileMoney.Network))
 	w.Header().Set("Content-Type", "application/json")
 	temp := make(map[string]interface{})
 	temp["charge"] = amount
 	temp["amount"] = MobileMoney.Amount
 	temp["network"] = MobileMoney.Network
 	temp["destination"] = strings.ToLower(MobileMoney.Destination)
+	json.NewEncoder(w).Encode(temp)
+}
+
+func receiveWorldRemit(w http.ResponseWriter, r *http.Request) {
+	countries := worldRemitToMTN()
+	temp := make(map[string]interface{})
+	temp["countries"] = countries
 	json.NewEncoder(w).Encode(temp)
 }
